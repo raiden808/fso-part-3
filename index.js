@@ -28,6 +28,13 @@ app.get('/api/persons',(req,res)=>{
 });
 
 /**
+ * 
+ */
+app.get('/info',(req,res)=>{
+    res.send("<p>Phonebook has info for "+persons.length+" people</p>")
+});
+
+/**
  * Port where server is enabled
  */
 const PORT = 3001
