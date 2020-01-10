@@ -31,7 +31,11 @@ app.get('/api/persons',(req,res)=>{
  * 
  */
 app.get('/info',(req,res)=>{
-    res.send("<p>Phonebook has info for "+persons.length+" people</p>")
+
+    let infoOutput = "<p>Phonebook has info for "+persons.length+" people</p>";
+    infoOutput += "<p>Test</p>";
+
+    res.send(infoOutput)
 });
 
 /**
