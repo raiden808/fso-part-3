@@ -23,6 +23,14 @@ let persons = [
 /**
  * General view of persons
  */
-app.get('/persons',(req,res)=>{
+app.get('/api/persons',(req,res)=>{
     res.json(persons)
+});
+
+/**
+ * Port where server is enabled
+ */
+const PORT = 3001
+app.listen(PORT,() =>{
+    console.log(`Server running on port ${PORT}`)
 });
