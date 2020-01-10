@@ -32,8 +32,10 @@ app.get('/api/persons',(req,res)=>{
  */
 app.get('/info',(req,res)=>{
 
+    let currDate = new Date().toString()
+
     let infoOutput = "<p>Phonebook has info for "+persons.length+" people</p>";
-    infoOutput += "<p>Test</p>";
+    infoOutput += "<p>"+currDate+"</p>";
 
     res.send(infoOutput)
 });
