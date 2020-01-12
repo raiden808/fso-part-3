@@ -4,19 +4,19 @@ const bodyParser = require('body-parser')
 
 let persons = [
     {
-        "name": "Jamal Newman",
-        "phone": "312-3123",
-        "id": 6
+        id:6,
+        name: "Jamal Newman",
+        phone: "312-3123"
     },
     {
-        "name": "Danny Hartow",
-        "phone": "023-1232",
-        "id": 7
+        id: 7,
+        name: "Danny Hartow",
+        phone: "023-1232"
     },
     {
-        "name": "Donny Ganger",
-        "phone": "0123-1221",
-        "id": 10
+        id: 10,
+        name: "Donny Ganger",
+        phone: "0123-1221"
     }
 ];
 
@@ -28,7 +28,7 @@ app.get('/api/persons',(req,res)=>{
 });
 
 /**
- * 
+ * Display data requested date
  */
 app.get('/info',(req,res)=>{
 
@@ -41,17 +41,27 @@ app.get('/info',(req,res)=>{
 });
 
 /**
- * Person delete function
+ * Retrieve specific person
  */
-app.delete('/api/persons/id',(request,response)=>{
+app.get('/api/persons/:id',(request,response)=>{
     const id = Number(request.params.id)
-    const person = persons.find(person=> person.id === id)
+    const person = persons.find(person => person.id === id)
 
     if(person){
-        response.json(note)
-    } else{
+        response.json(person)
+    } else {
         response.status(404).end()
     }
+})
+
+/**
+ * Person delete function
+ */
+app.delete('/api/persons/:id',(request,response)=>{
+    const id = Number(request.params.id)
+    persons = persons.filter(person => person.id !== id)
+
+    response.status(204).end()
 });
 
 /**
