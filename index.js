@@ -98,19 +98,15 @@ app.post('/api/persons',(request,response) => {
 
     if(nameCheck){
         return response.status(400).json({
-            error:'Name already exist.'
+            error:'name must be unique.'
         })
     }
-
-
 
     const person = {
         id:generateId(),
         name:body.name,
         phone:body.phone
     }
-
-    //console.log(body.test)
 
     persons = persons.concat(person)
 
