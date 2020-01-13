@@ -73,10 +73,13 @@ const generateId = () =>{
 }
 
 /**
- * Post Request
+ * Middleware should always be used before requests
  */
 app.use(bodyParser.json())
 
+/**
+ * Post Request
+ */
 app.post('/api/persons',(request,response) => {
     const body = request.body
 
