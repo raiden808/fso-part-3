@@ -4,17 +4,17 @@ const bodyParser = require('body-parser')
 
 let persons = [
     {
-        id:6,
+        id:1,
         name: "Jamal Newman",
         phone: "312-3123"
     },
     {
-        id: 7,
+        id: 2,
         name: "Danny Hartow",
         phone: "023-1232"
     },
     {
-        id: 10,
+        id: 3,
         name: "Donny Ganger",
         phone: "0123-1221"
     }
@@ -64,8 +64,15 @@ app.delete('/api/persons/:id',(request,response)=>{
     response.status(204).end()
 });
 
-
-
+/**
+ * Generate incrementing id
+ */
+const generateId = () =>{
+    const maxId = persons.length > 0
+        ? Math.max(...persons.map(n => n.id))
+        : 0
+    return maxId + 1
+}
 
 /**
  * Post Request
@@ -75,16 +82,23 @@ app.use(bodyParser.json())
 app.post('/api/persons',(request,response) => {
     const body = request.body
 
-    // if(!body.content){
-    //     return response.status(400).json({
-    //         error:'content missing'
-    //     })
-    // }
+    if(!body.name){
+        return response.status(400).json({
+            error:'Name missing.'
+        })
+    }
 
+    const person = {
+        id:generateId(),
+        name:body.name,
+        phone:body.phone
+    }
 
-    console.log(body.test)
+    //console.log(body.test)
 
-    response.send("done")
+    persons = persons.concat(person)
+
+    response.json(persons)
 })
 
 /**
