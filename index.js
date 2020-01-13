@@ -1,6 +1,29 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+let morgan = require('morgan')
+
+
+
+/**
+ * Middleware should always be used before requests
+ */
+app.use(bodyParser.json())
+
+/**
+ * modified token response of morgan
+ */
+morgan.token('person', (request, response) => {
+
+    //console.log(request.method)
+    if(request.method != "GET"){
+        return JSON.stringify(request.body)
+    }
+})
+
+app.use(
+    morgan(':method :url :status :res[content-length] - :response-time ms :person')
+)
 
 let persons = [
     {
@@ -71,11 +94,6 @@ const generateId = () =>{
     const maxId = Math.floor(Math.random() * Math.floor(10000))
     return maxId
 }
-
-/**
- * Middleware should always be used before requests
- */
-app.use(bodyParser.json())
 
 /**
  * Post Request
