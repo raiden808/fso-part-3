@@ -64,10 +64,28 @@ app.delete('/api/persons/:id',(request,response)=>{
     response.status(204).end()
 });
 
+
+
+
 /**
  * Post Request
  */
+app.use(bodyParser.json())
 
+app.post('/api/persons',(request,response) => {
+    const body = request.body
+
+    // if(!body.content){
+    //     return response.status(400).json({
+    //         error:'content missing'
+    //     })
+    // }
+
+
+    console.log(body.test)
+
+    response.send("done")
+})
 
 /**
  * Port where server is enabled
