@@ -4,7 +4,6 @@ const bodyParser = require('body-parser')
 let morgan = require('morgan')
 
 
-
 /**
  * Middleware should always be used before requests
  */
@@ -42,6 +41,12 @@ let persons = [
         phone: "0123-1221"
     }
 ];
+
+/**
+ * Gets static build built from a front end react app
+ */
+app.use(express.static('build'))
+
 
 /**
  * General view of persons
