@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "express": "^4.17.1",
+    "mongoose": "^5.8.7",
     "morgan": "^1.9.1"
   },
   "devDependencies": {
@@ -15,7 +16,7 @@
     "watch": "nodemon index.js",
     "build:ui": "rm -rf build && cd ../../studies/fullstackopen/fullstackopen/part3/part3-frontend && npm run build --prod && cp -r build ../../../../../studies/fso-part-3/",
     "deploy": "git push heroku master",
-    "deploy:full":"npm run build:ui && git add . && git commit -m uibuild && git push origin master && npm run deploy",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push origin master && npm run deploy",
     "logs:prod": "heroku logs --tail",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
