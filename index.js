@@ -1,7 +1,9 @@
-const express = require('express')
-const app = express()
+require('dotenv').config()
+const express    = require('express')
+const app        = express()
 const bodyParser = require('body-parser')
-let morgan = require('morgan')
+let   morgan     = require('morgan')
+const Person     = require('./models/person')
 
 
 /**
@@ -13,46 +15,30 @@ app.use(bodyParser.json())
  * modified token response of morgan
  */
 morgan.token('person', (request, response) => {
-
-    //console.log(request.method)
     if(request.method != "GET"){
         return JSON.stringify(request.body)
     }
 })
 
+/**
+ * Morgan terminal logs
+ */
 app.use(
     morgan(':method :url :status :res[content-length] - :response-time ms :person')
 )
-
-let persons = [
-    {
-        id:1,
-        name: "Jamal Newman",
-        phone: "312-3123"
-    },
-    {
-        id: 2,
-        name: "Danny Hartow",
-        phone: "023-1232"
-    },
-    {
-        id: 3,
-        name: "Donny Ganger",
-        phone: "0123-1221"
-    }
-];
 
 /**
  * Gets static build built from a front end react app
  */
 app.use(express.static('build'))
 
-
 /**
- * General view of persons
+ * Mongodb General Object View
  */
 app.get('/api/persons',(req,res)=>{
-    res.json(persons)
+    Person.find({}).then(people =>{
+        res.json(people.map(person => person.toJSON()))
+    })
 });
 
 /**
@@ -69,17 +55,12 @@ app.get('/info',(req,res)=>{
 });
 
 /**
- * Retrieve specific person
+ * Retrieve specific person mongodb
  */
 app.get('/api/persons/:id',(request,response)=>{
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-
-    if(person){
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    Person.findById(request.params.id).then(person =>{
+        response.json(person.toJSON())
+    })
 })
 
 /**
@@ -106,10 +87,6 @@ const generateId = () =>{
 app.post('/api/persons',(request,response) => {
     const body = request.body
 
-    const nameCheck = persons.find(
-        person => person.name === body.name
-    )
-
     if(!body.name){
         return response.status(400).json({
             error:'Name missing.'
@@ -122,21 +99,20 @@ app.post('/api/persons',(request,response) => {
         })
     }
 
-    if(nameCheck){
-        return response.status(400).json({
-            error:'name must be unique.'
-        })
-    }
-
-    const person = {
-        id:generateId(),
+    /**
+     * Create person data
+     */
+    const person = new Person({
         name:body.name,
-        phone:body.phone
-    }
+        phone:body.phone,
+    })
 
-    persons = persons.concat(person)
-
-    response.json(persons)
+    /**
+     * Save to MongoDB
+     */
+    person.save().then(savedPerson =>{
+        response.json(savedPerson.toJSON())
+    })
 })
 
 
@@ -144,7 +120,7 @@ app.post('/api/persons',(request,response) => {
  * Port assigned to web app
  * Very important when working with heroku
  */
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
