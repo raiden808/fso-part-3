@@ -5,7 +5,11 @@ const mongoose = require('mongoose')
  */
 const uniqueValidator = require('mongoose-unique-validator');
 
+/**
+ * Remove depreciation warnings.
+ */
 mongoose.set('useFindAndModify', false)
+mongoose.set('useCreateIndex', true);
 
 /**
  * env file for mongo URI
