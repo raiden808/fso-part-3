@@ -119,7 +119,7 @@ const generateId = () =>{
 /**
  * Post Request
  */
-app.post('/api/persons',(request,response) => {
+app.post('/api/persons',(request,response, next) => {
     const body = request.body
 
     if(!body.name){
@@ -148,6 +148,11 @@ app.post('/api/persons',(request,response) => {
     person.save().then(savedPerson =>{
         response.json(savedPerson.toJSON())
     })
+
+    /**
+     * Pass to error handling middleware
+     */
+    .catch(error => next(error))
 })
 
 /**

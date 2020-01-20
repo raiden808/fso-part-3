@@ -58,7 +58,7 @@ personSchema.set('toJSON',{
 })
 
 /**
- * apply plugin
+ * apply mongoose-unique-validator
  */
 personSchema.plugin(uniqueValidator);
 
