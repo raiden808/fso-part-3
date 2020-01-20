@@ -1,5 +1,10 @@
 const mongoose = require('mongoose')
 
+/**
+ * Advance validator mongoose plugin
+ */
+const uniqueValidator = require('mongoose-unique-validator');
+
 mongoose.set('useFindAndModify', false)
 
 /**
@@ -21,12 +26,22 @@ mongoose.connect(url,{useNewUrlParser:true, useUnifiedTopology: true})
     })
 
 /**
- *  Document Schema structure
+ *  Document Schema structure and Validations
  */
 const personSchema = mongoose.Schema({
-    name:String,
-    phone:String
+    name:{
+        type: String,
+        minlength: 5,
+        required: true,
+        unique:true
+    },
+    phone:{
+        type: String,
+        required: true,
+        unique:true
+    }
 })
+
 
 /**
  * Modify Schema Output
@@ -41,5 +56,10 @@ personSchema.set('toJSON',{
         delete returnedObject.__v
     }
 })
+
+/**
+ * apply plugin
+ */
+personSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('Person',personSchema)
