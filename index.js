@@ -74,11 +74,22 @@ app.get('/info',(req,res)=>{
 
 /**
  * Retrieve specific person mongodb
+ * make sure 'next' params is in argument
  */
-app.get('/api/persons/:id',(request,response)=>{
-    Person.findById(request.params.id).then(person =>{
-        response.json(person.toJSON())
-    })
+app.get('/api/persons/:id',(request,response,next)=>{
+    Person.findById(request.params.id)
+        .then(person =>{
+            if(person){
+                response.json(note.toJSON())
+            }
+            else{
+                response.status(204).end()
+            }
+        })
+        /**
+         * pass error to middle ware
+         */
+        .catch(error => next(error))
 })
 
 /**
@@ -134,6 +145,17 @@ app.post('/api/persons',(request,response) => {
     })
 })
 
+/**
+ * Error handling middleware
+ */
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+    if (error.name === 'CastError' && error.kind === 'ObjectId') {
+      return response.status(400).send({ error: 'malformatted id' })
+    } 
+    next(error)
+}
+app.use(errorHandler)
 
 /**
  * Port assigned to web app
