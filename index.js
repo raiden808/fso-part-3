@@ -146,6 +146,14 @@ app.post('/api/persons',(request,response) => {
 })
 
 /**
+ * Unkown endpoint handler
+ */
+const unknownEndpoint = (request, response) =>{
+    response.status(404).send({error:'unknown endpoint'})
+}
+app.use(unknownEndpoint)
+
+/**
  * Error handling middleware
  */
 const errorHandler = (error, request, response, next) => {
