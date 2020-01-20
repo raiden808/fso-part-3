@@ -42,6 +42,24 @@ app.get('/api/persons',(req,res)=>{
 });
 
 /**
+ * Update specific dom MongoDB
+ */
+app.put('/api/persons/:id',(request, response, next) => {
+    const body = request.body
+
+    const person = {
+        name:body.name,
+        phone:body.phone
+    }
+
+    Person.findByIdAndUpdate(request.params.id, person, {new: true})
+        .then(updatedPerson =>{
+            response.json(updatedPerson.toJSON())
+        })
+        .catch(error => next(error))
+});
+
+/**
  * Display data requested date
  */
 app.get('/info',(req,res)=>{

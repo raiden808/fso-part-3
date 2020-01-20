@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 
+mongoose.set('useFindAndModify', false)
+
 /**
  * env file for mongo URI
  */
@@ -31,6 +33,10 @@ const personSchema = mongoose.Schema({
  */
 personSchema.set('toJSON',{
     transform:(document,returnedObject) =>{
+        /**
+         * Display proper id
+         */
+        returnedObject.id = returnedObject._id.toString()
         delete returnedObject._id,
         delete returnedObject.__v
     }
