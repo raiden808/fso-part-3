@@ -41,6 +41,7 @@ const personSchema = mongoose.Schema({
     },
     phone:{
         type: String,
+        minlength: 8,
         required: true,
         unique:true
     }
