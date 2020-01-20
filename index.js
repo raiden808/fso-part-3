@@ -65,11 +65,16 @@ app.put('/api/persons/:id',(request, response, next) => {
 app.get('/info',(req,res)=>{
 
     let currDate = new Date().toString()
+    let personCount;
 
-    let infoOutput = "<p>Phonebook has info for "+persons.length+" people</p>";
-    infoOutput += "<p>"+currDate+"</p>";
-
-    res.send(infoOutput)
+    Person.count({}).then(person =>{
+       // console.log("----",person)
+        personCount = person;
+        let infoOutput = "<p>Phonebook has info for "+personCount+" people</p>";
+        infoOutput += "<p>"+currDate+"</p>";
+    
+        res.send(infoOutput)
+    })
 });
 
 /**
