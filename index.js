@@ -14,17 +14,17 @@ app.use(bodyParser.json())
 /**
  * modified token response of morgan
  */
-morgan.token('person', (request, response) => {
-    if(request.method != "GET"){
-        return JSON.stringify(request.body)
-    }
+morgan.token('person', (request) => {
+  if(request.method !== 'GET'){
+    return JSON.stringify(request.body)
+  }
 })
 
 /**
  * Morgan terminal logs
  */
 app.use(
-    morgan(':method :url :status :res[content-length] - :response-time ms :person')
+  morgan(':method :url :status :res[content-length] - :response-time ms :person')
 )
 
 /**
@@ -35,119 +35,111 @@ app.use(express.static('build'))
 /**
  * Mongodb General Object View
  */
-app.get('/api/persons',(req,res)=>{
-    Person.find({}).then(people =>{
-        res.json(people.map(person => person.toJSON()))
-    })
-});
+app.get('/api/persons',(req,res) => {
+  Person.find({}).then(people => {
+    res.json(people.map(person => person.toJSON()))
+  })
+})
 
 /**
  * Update specific dom MongoDB
  */
 app.put('/api/persons/:id',(request, response, next) => {
-    const body = request.body
+  const body = request.body
 
-    const person = {
-        name:body.name,
-        phone:body.phone
-    }
+  const person = {
+    name:body.name,
+    phone:body.phone
+  }
 
-    Person.findByIdAndUpdate(request.params.id, person, {new: true})
-        .then(updatedPerson =>{
-            response.json(updatedPerson.toJSON())
-        })
-        .catch(error => next(error))
-});
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson.toJSON())
+    })
+    .catch(error => next(error))
+})
 
 /**
  * Display data requested date
  */
-app.get('/info',(req,res)=>{
+app.get('/info',(req,res) => {
 
-    let currDate = new Date().toString()
-    let personCount;
+  let currDate = new Date().toString()
+  let personCount
 
-    Person.count({}).then(person =>{
-       // console.log("----",person)
-        personCount = person;
-        let infoOutput = "<p>Phonebook has info for "+personCount+" people</p>";
-        infoOutput += "<p>"+currDate+"</p>";
-    
-        res.send(infoOutput)
-    })
-});
+  Person.count({}).then(person => {
+    // console.log("----",person)
+    personCount = person
+    let infoOutput = '<p>Phonebook has info for '+personCount+' people</p>'
+    infoOutput += '<p>'+currDate+'</p>'
+
+    res.send(infoOutput)
+  })
+})
 
 /**
  * Retrieve specific person mongodb
  * make sure 'next' params is in argument
  */
-app.get('/api/persons/:id',(request,response,next)=>{
-    Person.findById(request.params.id)
-        .then(person =>{
-            if(person){
-                response.json(person.toJSON())
-            }
-            else{
-                response.status(204).end()
-            }
-        })
-        /**
-         * pass error to middle ware
-         */
-        .catch(error => next(error))
+app.get('/api/persons/:id',(request,response,next) => {
+  Person.findById(request.params.id)
+    .then(person => {
+      if(person){
+        response.json(person.toJSON())
+      }
+      else{
+        response.status(204).end()
+      }
+    })
+    /**
+    * pass error to middle ware
+    */
+    .catch(error => next(error))
 })
 
 /**
  * Person delete function
  */
-app.delete('/api/persons/:id',(request,response, next)=>{
-    Person.findByIdAndDelete(request.params.id)
-        .then(result =>{
-            response.status(204).end()
-        })
-        .catch(error => next(error))
-});
-
-/**
- * Generate incrementing id
- */
-const generateId = () =>{
-    const maxId = Math.floor(Math.random() * Math.floor(10000))
-    return maxId
-}
+app.delete('/api/persons/:id',(request,response, next) => {
+  Person.findByIdAndDelete(request.params.id)
+    .then(() => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
+})
 
 /**
  * Post Request
  */
 app.post('/api/persons',(request,response, next) => {
-    const body = request.body
+  const body = request.body
 
-    if(!body.name){
-        return response.status(400).json({
-            error:'Name missing.'
-        })
-    }
+  if(!body.name){
+    return response.status(400).json({
+      error:'Name missing.'
+    })
+  }
 
-    if(!body.phone){
-        return response.status(400).json({
-            error:'Number missing.'
-        })
-    }
+  if(!body.phone){
+    return response.status(400).json({
+      error:'Number missing.'
+    })
+  }
 
-    /**
+  /**
      * Create person data
      */
-    const person = new Person({
-        name:body.name,
-        phone:body.phone,
-    })
+  const person = new Person({
+    name:body.name,
+    phone:body.phone,
+  })
 
-    /**
+  /**
      * Save to MongoDB
      */
-    person.save().then(savedPerson =>{
-        response.json(savedPerson.toJSON())
-    })
+  person.save().then(savedPerson => {
+    response.json(savedPerson.toJSON())
+  })
 
     /**
      * Pass to error handling middleware
@@ -158,8 +150,8 @@ app.post('/api/persons',(request,response, next) => {
 /**
  * Unkown endpoint handler
  */
-const unknownEndpoint = (request, response) =>{
-    response.status(404).send({error:'unknown endpoint'})
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error:'unknown endpoint' })
 }
 app.use(unknownEndpoint)
 
@@ -167,13 +159,13 @@ app.use(unknownEndpoint)
  * Error handling middleware
  */
 const errorHandler = (error, request, response, next) => {
-    console.error(error.message)
-    if (error.name === 'CastError' && error.kind === 'ObjectId') {
-      return response.status(400).send({ error: 'malformatted id' })
-    } else if(error.name === 'ValidationError'){
-        return response.status(400).json({error:error.message})
-    }
-    next(error)
+  console.error(error.message)
+  if (error.name === 'CastError' && error.kind === 'ObjectId') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } else if(error.name === 'ValidationError'){
+    return response.status(400).json({ error:error.message })
+  }
+  next(error)
 }
 app.use(errorHandler)
 
